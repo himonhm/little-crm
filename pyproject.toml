@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "little-crm"
+version = "0.1.0"
+description = ""
+authors = ["Ilya Manannikov <himonhm@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "little_crm"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.3"
+gunicorn = "^21.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -24,4 +24,5 @@ from django.conf import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("authapp.urls")),
+    path("", include("ordersapp.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

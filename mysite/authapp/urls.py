@@ -14,5 +14,4 @@ urlpatterns = [
         LogoutView.as_view(next_page=reverse_lazy("authapp:login")),
         name="logout",
     ),
-    # TODO Logout view
 ]

@@ -81,6 +81,10 @@ class Order(models.Model):
             self.status = None
         self.save(update_fields=["status"])
 
+    class Meta:
+        verbose_name = _("Order")
+        verbose_name_plural = _("Orders")
+
     def __str__(self) -> str:
         return f"{self.number}"
 
@@ -135,7 +139,7 @@ class SubOrder(models.Model):
         verbose_name_plural = _("Suborders")
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.pk}"
 
 
 class SerialNumber(models.Model):

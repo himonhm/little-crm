@@ -1,0 +1,165 @@
+[
+  {
+    "model": "ordersapp.goodtype",
+    "pk": 1,
+    "fields": {
+      "name": "Good Type 1",
+      "description": "Description for Good Type 1",
+      "manual_link": "https://www.google.com",
+      "created_at": "2024-03-17T17:10:32.568Z",
+      "user": 1,
+      "archived": false
+    }
+  },
+  {
+    "model": "ordersapp.goodtype",
+    "pk": 2,
+    "fields": {
+      "name": "Good Type 2",
+      "description": "Description for Good Type 2",
+      "manual_link": "https://www.google.com",
+      "created_at": "2024-03-17T17:10:43.498Z",
+      "user": 1,
+      "archived": false
+    }
+  },
+  {
+    "model": "ordersapp.goodtype",
+    "pk": 3,
+    "fields": {
+      "name": "Good Type 3",
+      "description": "Description for Good Type 3",
+      "manual_link": "https://www.google.com",
+      "created_at": "2024-03-17T17:10:56.554Z",
+      "user": 1,
+      "archived": false
+    }
+  },
+  {
+    "model": "ordersapp.status",
+    "pk": 1,
+    "fields": {
+      "name": "Created",
+      "description": "",
+      "color": null,
+      "ordering": 0
+    }
+  },
+  {
+    "model": "ordersapp.status",
+    "pk": 2,
+    "fields": {
+      "name": "In work",
+      "description": "",
+      "color": "#f2fa96",
+      "ordering": 0
+    }
+  },
+  {
+    "model": "ordersapp.status",
+    "pk": 3,
+    "fields": {
+      "name": "Shipped",
+      "description": "",
+      "color": "#96fad5",
+      "ordering": 1
+    }
+  },
+  {
+    "model": "ordersapp.order",
+    "pk": 1,
+    "fields": {
+      "number": "TEST000001",
+      "date": "2024-03-19T18:12:40Z",
+      "status": null,
+      "user": 1,
+      "created_at": "2024-03-17T17:13:20.700Z"
+    }
+  },
+  {
+    "model": "ordersapp.suborder",
+    "pk": 1,
+    "fields": {
+      "good_type": 1,
+      "note": "Some text for this suborder",
+      "buyer": "Jeffrey Lebowski",
+      "client": "Google Inc.",
+      "status": 1,
+      "production_time": "2024-03-17T17:18:56Z",
+      "shipping_date": "2024-03-29T17:19:02Z",
+      "shipping_photos_link": "https://www.google.com",
+      "order": 1,
+      "user": 1,
+      "created_at": "2024-03-17T17:19:58.313Z"
+    }
+  },
+  {
+    "model": "ordersapp.suborder",
+    "pk": 2,
+    "fields": {
+      "good_type": 2,
+      "note": "Some text for this suborder",
+      "buyer": "Jeffrey Lebowski",
+      "client": "E-Corp",
+      "status": 2,
+      "production_time": "2024-03-17T17:19:31Z",
+      "shipping_date": "2024-03-19T17:19:34Z",
+      "shipping_photos_link": "https://www.google.com",
+      "order": 1,
+      "user": 1,
+      "created_at": "2024-03-17T17:19:58.316Z"
+    }
+  },
+  {
+    "model": "ordersapp.good",
+    "pk": 1,
+    "fields": {
+      "good_type": 2,
+      "sub_order": 2,
+      "serial_number": null,
+      "created_at": "2024-03-17T17:37:43.733Z",
+      "user": 1,
+      "is_ready": false,
+      "archived": false
+    }
+  },
+  {
+    "model": "ordersapp.good",
+    "pk": 2,
+    "fields": {
+      "good_type": 2,
+      "sub_order": 2,
+      "serial_number": null,
+      "created_at": "2024-03-17T17:37:43.736Z",
+      "user": 1,
+      "is_ready": false,
+      "archived": false
+    }
+  },
+  {
+    "model": "ordersapp.good",
+    "pk": 3,
+    "fields": {
+      "good_type": 2,
+      "sub_order": 2,
+      "serial_number": null,
+      "created_at": "2024-03-17T17:37:43.736Z",
+      "user": 1,
+      "is_ready": false,
+      "archived": false
+    }
+  },
+  {
+    "model": "ordersapp.good",
+    "pk": 4,
+    "fields": {
+      "good_type": 1,
+      "sub_order": 1,
+      "serial_number": null,
+      "created_at": "2024-03-17T17:38:38.363Z",
+      "user": 1,
+      "is_ready": false,
+      "archived": false
+    }
+  }
+]

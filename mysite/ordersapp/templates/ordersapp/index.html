@@ -1,0 +1,120 @@
+{% extends "ordersapp/base.html" %}
+
+{% block content %}
+
+            <!-- Summary Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+
+                    <div class="col-sm-6 col-xl">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center p-4">
+                            <div class="ms-3">
+                                <p class="mb-2 text-center">Заказов в работе:</p>
+                                <h6 class="mb-0 text-center">{{ orders_not_done_count }}</h6>
+                            </div>  
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center p-4">
+                            <div>
+                                <p class="mb-2 text-center">Изделий в работе:</p>
+                                <h6 class="mb-0 text-center"> {{ goods_in_work }}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Summary End -->
+            
+            <!-- Table Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-12">
+                        <div class="bg-light rounded h-100 p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <a class="btn btn-sm btn-success" href="#">Создать заказ</a>
+                                <h6 class="mb-0">Последние заказы</h6>
+                                <a class="btn btn-sm btn-primary" href="#">Перейти ко всем</a>
+                            </div>
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><span>№ заказа</span></th>
+                                        <th scope="col"><span>Дата заказа</span></th>
+                                        <th scope="col"><span>Номенклатура</span></th>
+                                        <th scope="col"><span>Кол-во</span></th>
+                                        <th scope="col"><span>Cтатус</span></th>
+                                        <th scope="col"><span>Срок</span></th>
+                                        {% comment %} <th scope="col" class="text-center"><span>Действия</span></th> {% endcomment %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders_not_done_last %}
+                                        {% for suborder in order.sub_orders.all %}
+                                        <tr>
+                                            {% if forloop.first %}
+                                            <td rowspan="{{ order.sub_orders.count }}" style="vertical-align: middle; background-color: {{ order.status.color }};"><a href="#">{{ order.number }}</a></td>
+                                            <td rowspan="{{ order.sub_orders.count }}" style="vertical-align: middle; background-color: {{ order.status.color }};">{{ order.date|date:'d.m.Y' }}</td>
+                                            {% endif %}
+                                            <td style="background-color: {{ suborder.status.color }};">{{ suborder.good_type.name }}</td>
+                                            <td style="background-color: {{ suborder.status.color }};">{{ suborder.goods.all.count }}</td>
+
+                                            {% if perms.change_me %} <!--TODO add real perm-->
+                                            <td style="width:150px; background-color: {{ suborder.status.color }};">
+                                                    <!-- Statuses Change Functionality part 1 -->
+                                                    <form method="post">
+                                                        <input type="hidden" name="suborder_pk" value="{{ suborder.pk }}" >
+                                                        
+                                                        <a href="#" id="statusField" onclick="showStatuses(this)">{{ suborder.status }}</a>
+                                                    </form>
+                                                    <!-- Statuses Change Functionality part 1 End -->
+                                                </td>
+                                            {% else %}
+                                                <td style="background-color: {{ suborder.status.color }};">{{ suborder.status }}</td>
+                                            {% endif %}
+
+                                            <td style="background-color: {{ suborder.status.color }};">{{ suborder.production_time|date:'d.m.Y' }}</td>
+                                            {% if forloop.first %}
+                                            {% comment %} <td rowspan="{{ order.sub_orders.count }}"><a class="btn btn-sm btn-outline-info w-100" href="{% url 'ordersapp:order_detail' pk=order.pk %}">К заказу</a></td> {% endcomment %}
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table End -->
+
+            {% if perms.change_me %} <!--TODO add real perm-->
+                <!-- Statuses Change Functionality part 2 -->
+                <div id="statusesForm" style="display: none;">
+                    {% csrf_token %}
+                    <select name="status_pk" class="form-select form-select-sm mb-1" aria-label=".form-select-sm example">
+                    {% for status in statuses_all %}
+                        <option value="{{ status.pk }}">{{ status.name }}</option>
+                    {% endfor %}
+                    <input type="hidden" name="change_status" value="true">
+                    <input type="submit" name="done" value="Подтвердить" class="btn btn-success btn-sm w-100 mb-1">
+                    {% comment %} <a data-href="{% url 'ordersapp:status_create' %}" onclick="window.open(this.dataset.href, 'my-new-popup', 'width=720,height=480,toolbar=no,scrollbars=yes,resizable=yes'); return false;" class="btn btn-outline-secondary btn-sm w-100">Новый статус</a> {% endcomment %}
+                    </select>
+                </div>
+
+                <script>
+                    function showStatuses(element) {
+                        let formDivCopy = document.getElementById("statusesForm").cloneNode(true);
+                        element.outerHTML = formDivCopy.innerHTML;
+                    }
+                </script>
+                <!-- Statuses Change Functionality part 2 End-->
+            {% endif %}
+
+{% endblock content %}

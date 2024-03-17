@@ -5,4 +5,6 @@ from . import views
 
 app_name = "ordersapp"
 
-urlpatterns = []
+urlpatterns = [
+    path("", views.DashboardView.as_view(), name="index"),
+]

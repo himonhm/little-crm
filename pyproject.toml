@@ -12,6 +12,9 @@ django = "^5.0.3"
 gunicorn = "^21.2.0"
 
 
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^4.2.7"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

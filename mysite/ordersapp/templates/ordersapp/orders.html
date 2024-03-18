@@ -1,0 +1,91 @@
+{% extends "ordersapp/base.html" %}
+
+{% block content %}
+
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light text-center rounded p-3 mb-2">
+                    <a class="btn btn-success w-100" href="#">Создать заказ</a>
+                </div>
+                <div class="bg-light text-center rounded p-4">
+                    <div class="mb-4">
+                        <h6 class="mb-0 justify-content-center">Заказы</h6>
+                        <i class="mb-0 justify-content-center">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</i>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><span>№ заказа</span></th>
+                                    <th scope="col"><span>Дата заказа</span></th>
+                                    <th scope="col"><span>Номенклатура</span></th>
+                                    <th scope="col"><span>Кол-во</span></th>
+                                    <th scope="col"><span>Заказчик</span></th>
+                                    <th scope="col"><span>Клиент</span></th>
+                                    <th scope="col"><span>Cтатус</span></th>
+                                    <th scope="col"><span>Срок</span></th>
+                                    {% if perms.change_me %} <!--TODO add real perm--><th class="text-warning" scope="col">Пользователь</th>{% endif %}
+                                    {% if perms.change_me %} <!--TODO add real perm--><th class="text-warning"  scope="col">Создан</th>{% endif %}
+                                    {% comment %} <th scope="col" class="text-center"><span>Действия</span></th> {% endcomment %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                    {% for suborder in order.sub_orders.all %}
+                                    <tr>
+                                        {% if forloop.first %}
+                                        <td rowspan="{{ order.sub_orders.count }}" style="vertical-align: middle; background-color: {{ order.status.color }};"><a href="#">{{ order.number }}</a></td>
+                                        <td rowspan="{{ order.sub_orders.count }}" style="vertical-align: middle; background-color: {{ order.status.color }};">{{ order.date|date:'d.m.Y' }}</td>
+                                        {% endif %}
+                                        <td style="background-color: {{ suborder.status.color }};">{{ suborder.good_type.name }}</td>
+                                        <td style="background-color: {{ suborder.status.color }};">{{ suborder.goods.all.count }}</td>
+                                        <td style="background-color: {{ suborder.status.color }};">{{ suborder.buyer }}</td>
+                                        <td style="background-color: {{ suborder.status.color }};">{{ suborder.client }}</td>
+                                        {% if perms.change_me %} <!--TODO add real perm-->
+                                            <td style="width:150px; background-color: {{ suborder.status.color }};">
+                                                {% include "ordersapp/components/show_status_or_change_form.html" %}
+                                            </td>
+                                        {% else %}
+                                            <td style="background-color: {{ suborder.status.color }};">{{ suborder.status }}</td>
+                                        {% endif %}
+                                        <td style="background-color: {{ suborder.status.color }};">{{ suborder.production_time|date:'d.m.Y' }}</td>
+                                        {% if perms.change_me %} <!--TODO add real perm--><td style="background-color: {{ suborder.status.color }};">{% firstof order.user.firstname order.user.username %}</td>{% endif %}
+                                        {% if perms.change_me %} <!--TODO add real perm--><td style="background-color: {{ suborder.status.color }};">{{ order.created_at|date:'d.m.Y - H:i' }}</td>{% endif %}
+                                        {% if forloop.first %}
+                                        {% comment %} <td rowspan="{{ order.sub_orders.count }}"><a class="btn btn-sm btn-outline-info w-100" href="{% url 'ordersapp:order_detail' pk=order.pk %}">К заказу</a></td> {% endcomment %}
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid pt-4 px-4">
+                <div class="pagination bg-light text-center rounded p-4 justify-content-center">
+                    <div class="d-flex w-100 justify-content-between">
+                        {% if page_obj.has_previous %}
+                        <div>
+                            <a href="?page=1">&laquo;&laquo; Первая</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">&laquo; Предыдущая</a>
+                        </div>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+                
+                        {% if page_obj.has_next %}
+                        <div>
+                            <a href="?page={{ page_obj.next_page_number }}">Следующая &raquo;</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;&raquo;</a>
+                        </div>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Sales End -->
+{% endblock content %}
+

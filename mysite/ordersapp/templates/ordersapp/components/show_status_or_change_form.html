@@ -1,0 +1,29 @@
+<!-- Statuses Change Functionality part 1 -->
+<form method="post">
+    <input type="hidden" name="suborder_pk" value="{{ suborder.pk }}" >
+    
+    <a href="#" id="statusField" onclick="showStatuses(this)">{{ suborder.status }}</a>
+</form>
+<!-- Statuses Change Functionality part 1 End -->
+{% if perms.change_me %} <!--TODO add real perm-->
+    <!-- Statuses Change Functionality part 2 -->
+    <div id="statusesForm" style="display: none;">
+        {% csrf_token %}
+        <select name="status_pk" class="form-select form-select-sm mb-1" aria-label=".form-select-sm example">
+        {% for status in statuses_all %}
+            <option value="{{ status.pk }}">{{ status.name }}</option>
+        {% endfor %}
+        <input type="hidden" name="change_status" value="true">
+        <input type="submit" name="done" value="Подтвердить" class="btn btn-success btn-sm w-100 mb-1">
+        {% comment %} <a data-href="{% url 'ordersapp:status_create' %}" onclick="window.open(this.dataset.href, 'my-new-popup', 'width=720,height=480,toolbar=no,scrollbars=yes,resizable=yes'); return false;" class="btn btn-outline-secondary btn-sm w-100">Новый статус</a> {% endcomment %}
+        </select>
+    </div>
+
+    <script>
+        function showStatuses(element) {
+            let formDivCopy = document.getElementById("statusesForm").cloneNode(true);
+            element.outerHTML = formDivCopy.innerHTML;
+        }
+    </script>
+    <!-- Statuses Change Functionality part 2 End-->
+{% endif %}

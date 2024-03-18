@@ -9,7 +9,7 @@ from . import forms as authapp_forms
 class RegisterView(CreateView):
     form_class = authapp_forms.CustomUserCreationForm
     template_name = "authapp/register.html"
-    success_url = reverse_lazy("someapp:home")  # TODO change to real url
+    success_url = reverse_lazy("ordersapp:index")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -27,3 +27,4 @@ class RegisterView(CreateView):
 class CustomLoginView(LoginView):
     template_name = "authapp/login.html"
     form_class = authapp_forms.CustomAuthenticationForm
+    redirect_authenticated_user = True

@@ -1,6 +1,8 @@
+import json
 from django.http import HttpRequest
 
 from . import models
+from . import forms
 
 
 def change_suborder_status(request: HttpRequest):
@@ -34,3 +36,36 @@ def get_dashboard_context_data():
         "goods_in_work": goods_queryset.count(),
         "statuses_all": statuses_queryset,
     }
+
+
+def create_order_with_suborders(request: HttpRequest):
+    json_data = request.POST.get("json")
+    json_dict = json.loads(json_data) if json_data else {}
+
+    order_form = forms.OrderForm(data=json_dict.get("order", {}))
+    suborders_forms = [
+        forms.SubOrderCreationForm(data=suborder)
+        for suborder in json_dict.get("suborders", [])
+    ]
+
+    if not order_form.is_valid() or not all(
+        form.is_valid() for form in suborders_forms
+    ):
+        return False
+
+    order = order_form.save(commit=False)
+    order.user = request.user
+    order.status = models.Status.objects.get_or_create(name="Created")[0]
+    order.save()
+
+    for suborder_form in suborders_forms:
+        suborder = suborder_form.save(commit=False)
+        suborder.order = order
+        suborder.user = request.user
+        suborder.status = order.status
+        suborder.save()
+        amount_goods = int(suborder_form.data.get("amount", 0)) or 0
+        for _ in range(amount_goods):
+            models.Good.objects.create(sub_order=suborder, good_type=suborder.good_type)
+
+    return True

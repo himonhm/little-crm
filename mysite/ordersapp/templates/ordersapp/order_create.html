@@ -1,0 +1,140 @@
+{% extends "ordersapp/base.html" %}
+
+{% block content %}
+
+            <!-- Recent Sales Start -->
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4 text-center">Создание заказа</h6>
+                <form method="post" id="orderForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-12 col-xl-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" name="number" class="form-control" id="floatingInput"
+                                    placeholder="№ заказа" required>
+                                <label for="floatingInput">№ заказа</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-xl-6">
+                            <div class="form-floating mb-3">
+                                <input type="date" name="date" class="form-control" id="floatingDate"
+                                    placeholder="Дата заказа">
+                                <label for="floatingDate">Дата заказа</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <h6 class="mb-4 text-center">Подзаказы</h6>
+                <div id="suborderContainer">
+                    <form method="post" id="suborderForm">
+                        <div class="row">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="form-floating mb-3">
+                                    <select name="good_type" class="form-select" id="floatingSelect" required>
+                                        {% for good_type in good_types %}
+                                            <option value="{{ good_type.pk }}">{{ good_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="floatingSelect">Номенклатура</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="form-floating mb-3">
+                                    <input type="number" name="amount" value="1" class="form-control" id="floatingInput"
+                                        placeholder="Количество" required>
+                                    <label for="floatingInput">Количество</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" name="note" placeholder="Leave a comment here"
+                                id="floatingTextarea" style="height: 150px;"></textarea>
+                            <label for="floatingTextarea">Примечание</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" name="buyer" class="form-control" id="floatingInput"
+                                placeholder="Заказчик">
+                            <label for="floatingInput">Заказчик</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" name="client" class="form-control" id="floatingInput"
+                                placeholder="Клиент">
+                            <label for="floatingInput">Клиент</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="date" name="production_time" class="form-control" id="floatingDate"
+                                placeholder="production_time">
+                            <label for="floatingDate">Срок производства</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="container-fluid p-0">
+                    <a class="btn btn-primary w-100 mb-4" href="#" id="addRowButton">+ добавить подзаказ</a>
+                </div>
+    
+                <div class="container-fluid p-0">
+                    <a class="btn btn-success py-3 w-100 mb-4" href="#" id="submitButton">Завершить</a>
+                </div>
+            </div>
+            
+            <!-- Recent Sales End -->
+{% endblock content %}
+{% block js %}
+<script>
+    function addSuborderForm() {
+        const $suborderForm = document.getElementById("suborderForm");
+        const $suborderContainer = document.getElementById("suborderContainer");
+        const hr = document.createElement("hr");
+        $suborderContainer.appendChild(hr.cloneNode(true));
+        $suborderContainer.appendChild($suborderForm.cloneNode(true));
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const $addRowButton = document.getElementById("addRowButton");
+        $addRowButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            addSuborderForm();
+        });
+    
+        const $submitButton = document.getElementById("submitButton");
+        $submitButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const orderForm = document.querySelector("#orderForm");
+            const subordersForms = Array.from(document.querySelectorAll("#suborderForm"));
+            
+            const csrfToken = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+            
+            const orderFormData = new FormData(orderForm);
+            const allData = {
+                order: Object.fromEntries(Array.from(orderFormData.entries()).filter(([key]) => key !== "csrfmiddlewaretoken")),
+                suborders: subordersForms.map(suborderForm => Object.fromEntries(new FormData(suborderForm).entries()))
+            };
+            
+            const formData = new FormData();
+            formData.append("csrfmiddlewaretoken", csrfToken);
+            formData.append("json", JSON.stringify(allData));
+            
+            fetch("", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = response.url;
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+    });
+</script>
+{% endblock js %}

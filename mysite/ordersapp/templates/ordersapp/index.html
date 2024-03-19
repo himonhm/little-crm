@@ -35,7 +35,7 @@
                         <div class="bg-light rounded h-100 p-4">
 
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <a class="btn btn-sm btn-success" href="#">Создать заказ</a>
+                                <a class="btn btn-sm btn-success" href="{% url 'ordersapp:order_create' %}">Создать заказ</a>
                                 <h6 class="mb-0">Последние заказы</h6>
                                 <a class="btn btn-sm btn-primary" href="{% url 'ordersapp:orders' %}">Перейти ко всем</a>
                             </div>

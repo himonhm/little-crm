@@ -74,7 +74,11 @@ class Order(models.Model):
         Update order status to common status of all related OrderDetail instances,
         if they share the same status; otherwise, reset the status.
         """
-        status_names = {suborders.status.name for suborders in self.sub_orders.all()}
+        status_names = {
+            suborders.status.name
+            for suborders in self.sub_orders.all()
+            if suborders.status
+        }
         if len(status_names) == 1:
             self.status = Status.objects.get_or_create(name=status_names.pop())[0]
         else:
